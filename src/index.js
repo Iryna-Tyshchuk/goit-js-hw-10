@@ -2,22 +2,17 @@ import './css/styles.css';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 import { fetchCountries } from './js/fetchCountries.js';
-// name.official - повна назва країни
-// capital - столиця
-// population - населення
-// flags.svg - посилання на зображення прапора
-// languages - масив мов
 
-const DEBOUNCE_DELAY = 1300;
+const DEBOUNCE_DELAY = 300;
 const inputEl = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
 const countryInfo = document.querySelector('.country-info');
 // console.log(inputEl);
 inputEl.addEventListener('input', debounce(onInputSearch, DEBOUNCE_DELAY));
-
+const clearMarkup = ref => (ref.innerHTML = '');
 function onInputSearch(event) {
   const searchText = event.target.value.trim();
-  console.log(searchText);
+
   if (searchText.length === 1) {
     Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
@@ -29,19 +24,25 @@ function onInputSearch(event) {
   fetchCountries(searchText)
     .then(responce => {
       const searchdatalength = responce.length;
+      if (searchdatalength > 10) {
+        Notify.info(
+          'Too many matches found. Please enter a more specific name'
+        );
+        return;
+      }
 
       if (searchdatalength === 1) {
-        console.log(responce[0]);
-        const toDoCountryCard = createCountryCard(responce[0]);
-        countryInfo.innerHTML = toDoCountryCard;
+        clearMarkup(countryList);
+        countryInfo.innerHTML = createCountryCard(responce[0]);
       }
       if (searchdatalength > 2 && searchdatalength < 10) {
-        const toDoLiElements = createLi(responce);
-        countryList.innerHTML = toDoLiElements;
+        clearMarkup(countryInfo);
+        countryList.innerHTML = createLi(responce);
       }
     })
     .catch(err => {
-      console.log(err.message);
+      clearMarkup(countryList);
+      clearMarkup(countryInfo);
       if (err.message === '404') {
         Notiflix.Notify.failure('Oops, there is no country with that name');
       }
