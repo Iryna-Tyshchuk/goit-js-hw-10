@@ -13,7 +13,12 @@ const clearMarkup = ref => (ref.innerHTML = '');
 function onInputSearch(event) {
   const searchText = event.target.value.trim();
 
-  if (searchText.length <= 1) {
+  if (searchText === '') {
+    Notiflix.Notify.info('Please choose your country.');
+    return;
+  }
+
+  if (searchText.length === 1) {
     Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
