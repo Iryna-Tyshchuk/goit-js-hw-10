@@ -18,14 +18,6 @@ function onInputSearch(event) {
     return;
   }
 
-  if (searchText.length === 1) {
-    Notiflix.Notify.info(
-      'Too many matches found. Please enter a more specific name.'
-    );
-
-    return;
-  }
-
   fetchCountries(searchText)
     .then(responce => {
       const searchdatalength = responce.length;
@@ -58,7 +50,8 @@ function createLi(array = []) {
   return array
     .map(
       el =>
-        `<li><img src='${el.flags.svg}'width="50px" height="30px"/><span>${el.name}</span></li>`
+        `<li><img src='${el.flags.svg}'width="50px" height="30px"/>
+        <span>${el.name}</span></li>`
     )
     .join('');
 }
